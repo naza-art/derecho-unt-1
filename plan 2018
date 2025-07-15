@@ -1,0 +1,260 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1" />
+  <title>Malla Interactiva - Abogacía UNT 2018</title>
+  <style>
+    body {
+      font-family: sans-serif;
+      background: #f2f2f2 url('https://i.imgur.com/fw60QhP.jpeg') no-repeat center center fixed;
+      background-size: cover;
+      padding: 20px;
+      margin: 0;
+      font-size: 0.85rem;
+    }
+    h1 {
+      text-align: center;
+      color: #4a4a4a;
+      background-color: #fce4ec;
+      padding: 10px;
+      border-radius: 10px;
+      font-size: 1.2rem;
+      box-shadow: 0 0 8px #ccc;
+    }
+    #malla {
+      display: flex;
+      flex-direction: column;
+      gap: 20px;
+      align-items: center;
+    }
+    .fila {
+      display: flex;
+      justify-content: center;
+      flex-wrap: wrap;
+      gap: 20px;
+      width: 100%;
+    }
+    .anio {
+      display: flex;
+      flex-direction: column;
+      min-width: 300px;
+      background: #fce4ec;
+      padding: 10px;
+      border-radius: 10px;
+      box-shadow: 0 0 6px #bbb;
+    }
+    .anio h3 {
+      text-align: center;
+      margin: 0;
+      font-size: 1rem;
+      color: #333;
+    }
+    .cuatrimestre {
+      display: flex;
+      flex-direction: column;
+      background: #f8bbd0;
+      margin: 10px 0;
+      border-radius: 8px;
+      padding: 5px;
+    }
+    .cuatrimestre h4 {
+      margin: 5px 0;
+      text-align: center;
+      font-size: 0.9rem;
+      color: #222;
+    }
+    .materia {
+      background: #000000;
+      margin: 4px 0;
+      padding: 6px 8px;
+      border-radius: 5px;
+      text-align: center;
+      cursor: pointer;
+      transition: background 0.3s, transform 0.2s;
+      font-size: 0.85rem;
+      color: #ffffff;
+      font-weight: 600;
+      user-select: none;
+    }
+    .materia:hover {
+      transform: translateY(-2px);
+      background: #222222;
+    }
+    .materia.aprobada {
+      background: #4caf50;
+    }
+    .materia.bloqueada {
+      background: #000000;
+      pointer-events: none;
+      cursor: default;
+    }
+    .materia.desbloqueada {
+      background: #91c3f2;
+    }
+  </style>
+</head>
+<body>
+<h1>Malla Interactiva - Abogacía UNT (Plan 2018)</h1>
+<div id="malla">
+  <div class="fila" id="fila1"></div>
+  <div class="fila" id="fila2"></div>
+</div>
+
+<script>
+  const data = [
+    { anio: '1º Año', fila: 'fila1' },
+    { anio: '2º Año', fila: 'fila1' },
+    { anio: '3º Año', fila: 'fila1' },
+    { anio: '4º Año', fila: 'fila2' },
+    { anio: '5º Año', fila: 'fila2' },
+    { anio: '6º Año', fila: 'fila2' },
+  ];
+
+  const cuatrimestres = {
+    '1º Año': [
+      { titulo: '1º Cuatrimestre', materias: [1, 2, 3] },
+      { titulo: '2º Cuatrimestre', materias: [4, 5, 6] },
+    ],
+    '2º Año': [
+      { titulo: '1º Cuatrimestre', materias: [7, 8, 9] },
+      { titulo: '2º Cuatrimestre', materias: [10, 11, 12] },
+    ],
+    '3º Año': [
+      { titulo: '1º Cuatrimestre', materias: [13, 14] },
+      { titulo: '2º Cuatrimestre', materias: [15, 16, 17, 18, 19] },
+    ],
+    '4º Año': [
+      { titulo: '1º Cuatrimestre', materias: [20, 21, 22, 23] },
+      { titulo: '2º Cuatrimestre', materias: [24, 25, 26, 27] },
+    ],
+    '5º Año': [
+      { titulo: '1º Cuatrimestre', materias: [28, 29, 30] },
+      { titulo: '2º Cuatrimestre', materias: [31, 32, 33, 34] },
+    ],
+    '6º Año': [
+      { titulo: '1º Cuatrimestre', materias: [35, 36, 37] },
+      { titulo: '2º Cuatrimestre', materias: [38, 39, 40] },
+    ],
+  };
+
+  const nombres = {
+    1:'Historia del Pensamiento Político y Jurídico', 2:'Contenidos Transversales', 3:'Destrezas I',
+    4:'Teoría del Derecho y la Justicia', 5:'Teoría del Estado', 6:'Nociones de Economía',
+    7:'Lógica', 8:'Derecho Constitucional', 9:'Teoría de la Relación Jurídica y de la Persona',
+    10:'Nociones de Sociología', 11:'Obligaciones Civiles y Comerciales', 12:'Derecho Penal I',
+    13:'Contratos', 14:'Penal II', 15:'Derecho de la Empresa y los Negocios',
+    16:'Derecho Procesal I', 17:'Derechos Humanos', 18:'Destrezas II', 19:'Ciber delitos',
+    20:'Derecho Societario y Cambiario', 21:'Derecho Procesal II', 22:'Derecho Ambiental', 23:'Optativa II',
+    24:'Derechos Reales', 25:'Derecho del Consumidor', 26:'Derecho del Trabajo y la Seguridad Social', 27:'Destrezas III',
+    28:'Derecho de Familia y Sucesiones', 29:'Derecho del Transporte', 30:'Filosofía del Derecho',
+    31:'Concursos y Privilegios', 32:'Derecho Administrativo', 33:'Destrezas IV', 34:'Optativa III',
+    35:'Derecho Tributario y Financiero', 36:'Derecho Internacional Público', 37:'Optativa IV',
+    38:'Derecho Internacional Privado', 39:'Optativa V', 40:'Destrezas V'
+  };
+
+  const correlativas = {
+    7:[1,2,4],8:[1,2,4,5],9:[2,4,6],11:[9],12:[8],13:[11],14:[12],15:[13],
+    16:[8,9,14],17:[8],18:[3,7,10],19:[14],20:[15],21:[16,11],22:[8,13],
+    24:[8,13],25:[8,13],26:[8,13],27:[18,11,14],28:[24,16],29:[15],
+    30:[17,10],31:[20,21],32:[24,21],33:[27,16,13],35:[32],36:[17],
+    38:[28,31],40:[21,28,33]
+  };
+
+  // Construcción del DOM con materias
+  data.forEach(({anio, fila}) => {
+    const container = document.getElementById(fila);
+    const divAnio = document.createElement('div');
+    divAnio.className = 'anio';
+
+    const h3 = document.createElement('h3');
+    h3.textContent = anio;
+    divAnio.appendChild(h3);
+
+    cuatrimestres[anio].forEach(({titulo, materias}) => {
+      const divCuatri = document.createElement('div');
+      divCuatri.className = 'cuatrimestre';
+      const h4 = document.createElement('h4');
+      h4.textContent = titulo;
+      divCuatri.appendChild(h4);
+
+      materias.forEach(id => {
+        const divMateria = document.createElement('div');
+        divMateria.className = 'materia';
+        divMateria.textContent = nombres[id];
+        divMateria.dataset.id = id;
+        if (correlativas[id]) {
+          divMateria.dataset.correlativas = correlativas[id].join(',');
+          divMateria.classList.add('bloqueada');
+        }
+        divCuatri.appendChild(divMateria);
+      });
+
+      divAnio.appendChild(divCuatri);
+    });
+
+    container.appendChild(divAnio);
+  });
+
+  const materias = document.querySelectorAll('.materia');
+
+  // Guardar materias aprobadas en localStorage
+  function guardarEstado() {
+    const aprobadas = [];
+    materias.forEach(m => {
+      if (m.classList.contains('aprobada')) {
+        aprobadas.push(m.dataset.id);
+      }
+    });
+    localStorage.setItem('materiasAprobadas', JSON.stringify(aprobadas));
+  }
+
+  // Cargar materias aprobadas desde localStorage
+  function cargarEstado() {
+    const guardadas = JSON.parse(localStorage.getItem('materiasAprobadas') || '[]');
+    materias.forEach(m => {
+      if (guardadas.includes(m.dataset.id)) {
+        m.classList.add('aprobada');
+        m.classList.remove('bloqueada');
+        m.classList.remove('desbloqueada');
+      }
+    });
+  }
+
+  materias.forEach(m => m.addEventListener('click', () => {
+    if (m.classList.contains('bloqueada')) return;
+    m.classList.toggle('aprobada');
+    m.classList.remove('desbloqueada');
+    actualizarCorrelativas();
+    guardarEstado(); // Guardar estado tras cada cambio
+  }));
+
+  function actualizarCorrelativas() {
+    materias.forEach(m => {
+      const req = m.dataset.correlativas;
+      if (!req) return;
+      const ids = req.split(',');
+      const requisitosCumplidos = ids.every(id =>
+        document.querySelector(`.materia[data-id="${id}"]`).classList.contains('aprobada')
+      );
+      if (requisitosCumplidos) {
+        m.classList.remove('bloqueada');
+        if (!m.classList.contains('aprobada')) {
+          m.classList.add('desbloqueada');
+        }
+      } else {
+        m.classList.add('bloqueada');
+        m.classList.remove('aprobada');
+        m.classList.remove('desbloqueada');
+      }
+    });
+    guardarEstado(); // Guardar estado tras actualizar correlativas
+  }
+
+  // Inicializar la página
+  cargarEstado();
+  actualizarCorrelativas();
+</script>
+</body>
+</html>
+Subida de archivo index.html
